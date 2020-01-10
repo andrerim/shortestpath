@@ -25,6 +25,17 @@ class Node {
     }
 
     addNeighbour(node, cost) {
+        if (node.neighbours.length > 0){
+            let nodeContainsNeigbour = false;
+            for (let edge of node.neighbours){
+                if (edge.toNode == this){
+                    nodeContainsNeigbour = true; 
+                }
+            }
+            if (!nodeContainsNeigbour){
+                node.neighbours.push(new Edge(node, this, cost));
+            }
+        }
         this.neighbours.push(new Edge(this, node, cost));
     }
 
@@ -38,6 +49,7 @@ class Node {
 }
 
 class Edge {
+    // TODO - change to undirected graph vaiable names
     constructor(fromNode, toNode, edgeCost) {
         this.fromNode = fromNode;
         this.toNode = toNode;
@@ -92,23 +104,31 @@ const ctx = canv.getContext('2d');
 
 let width = canv.width;
 let height = canv.height;
-let squareSize = width / 10;
+let squareSize = 10;
 
 let grid = [];
 
 for (let y = 0; y < height+10; y += 10){
+    let row = []
     for (let x = 0; x < width+10; x += 10){
-          grid.push(x, y);
+          row.push([x, y]);
           ctx.strokeRect(x, y, x+10, y+10);
     }
+    grid.push(row);
 }
+
+console.log(grid)
+
 
 let graph = new Graph(); 
 
+
+let goal = [500, 400];
 for (let i = 0; i < grid.length; i++){
-    let row = [];
+    var row = [];
     for (let k = 0; k < grid[i].length; k++){
-        let node = new Node(0, i.toString + ", " + k.toString, k, i);
+        let h = Math.abs(goal[0]-k) + Math.abs(goal[1]-i);
+        let node = new Node(h, k.toString() + ", " + i.toString(), k, i);
         row.push(node)
     }
     graph.addNode(row)
@@ -116,14 +136,16 @@ for (let i = 0; i < grid.length; i++){
 
 
 let nodes = graph.getNodes();
-console.log(nodes[0].length)
+
+
 
 for (let i = 0; i < nodes.length-1; i++){
     for (let k = 0; k < nodes[i].length-1; k++){
-        console.log("hei")
         let node = nodes[i][k];
-        console.log(node)
-        node.addNeighbour(nodes[i+1][k+1], 1);
+        
+        node.addNeighbour(nodes[i][k+1], 1);
+        node.addNeighbour(nodes[i+1][k], 1);
+        
     }
 }
 
@@ -136,10 +158,8 @@ ctx.fillRect(490, 390, 500, 400)
 
 console.log(graph.getNodes())
 
-aStar(graph, graph.getNodes()[0][0], graph.getNodes()[nodes.length][nodes[0].length-1]);
+console.log(aStar(graph, graph.getNodes()[0][0], graph.getNodes()[nodes.length-1][nodes[0].length-1]));
 
 
-console.log(aStar(graph, nodeA, nodeF));
-console.log(graph)
 
 

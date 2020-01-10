@@ -14,8 +14,8 @@ function aStar(graph, startNode, goalNode) {
 
     let currentNode = openNodes[0];
     currentNode.pathCost = currentNode.h;
-    var i = 0;
-    while (i < 100) {
+    
+    while (true) {
         drawPath(closedNodes);
         if (openNodes.length === 0) {
             return 0;
@@ -40,7 +40,7 @@ function aStar(graph, startNode, goalNode) {
                 edge.toNode.parent = node;
                 edge.toNode.setPathCost(node.pathCost + edge.edgeCost);
                 openNodes.push(edge.toNode);
-            } else if (node.pathCost + edge.edgeCost < edge.toNode.pathCost) {
+            } else if (node.pathCost + edge.edgeCost + edge.toNode.h < edge.toNode.pathCost) {
                 edge.toNode.parent = node;
                 edge.toNode.setPathCost(node.pathCost + edge.edgeCost);
                 /*  if (closedNodes.includes(edge.toNode)){
@@ -49,7 +49,7 @@ function aStar(graph, startNode, goalNode) {
             }
         }
 
-        i++;
+       
     }
 
 
