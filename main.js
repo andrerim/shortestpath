@@ -35,7 +35,7 @@ class Node {
             if (!nodeContainsNeigbour){
                 node.neighbours.push(new Edge(node, this, cost));
             }
-        }
+        } 
         this.neighbours.push(new Edge(this, node, cost));
     }
 
@@ -104,15 +104,15 @@ const ctx = canv.getContext('2d');
 
 let width = canv.width;
 let height = canv.height;
-let squareSize = 10;
+let squareSize = 20;
 
 let grid = [];
 
-for (let y = 0; y < height+10; y += 10){
+for (let y = 0; y < height+squareSize; y += squareSize){
     let row = []
-    for (let x = 0; x < width+10; x += 10){
+    for (let x = 0; x < width+squareSize; x += squareSize){
           row.push([x, y]);
-          ctx.strokeRect(x, y, x+10, y+10);
+          ctx.strokeRect(x, y, x+squareSize, y+squareSize);
     }
     grid.push(row);
 }
@@ -123,11 +123,11 @@ console.log(grid)
 let graph = new Graph(); 
 
 
-let goal = [500, 400];
+let goal = [width, height];
 for (let i = 0; i < grid.length; i++){
     var row = [];
     for (let k = 0; k < grid[i].length; k++){
-        let h = Math.abs(goal[0]-k) + Math.abs(goal[1]-i);
+        let h = Math.abs(goal[0]-(k*squareSize)) + Math.abs(goal[1]-i*squareSize);
         let node = new Node(h, k.toString() + ", " + i.toString(), k, i);
         row.push(node)
     }
@@ -145,6 +145,9 @@ for (let i = 0; i < nodes.length-1; i++){
         
         node.addNeighbour(nodes[i][k+1], 1);
         node.addNeighbour(nodes[i+1][k], 1);
+        node.addNeighbour(nodes[i+1][k+1], 1);
+        
+        
         
     }
 }
@@ -152,14 +155,18 @@ for (let i = 0; i < nodes.length-1; i++){
 
 
 
-ctx.fillRect(0,0,10,10);
+ctx.fillRect(0,0,squareSize,squareSize);
 
-ctx.fillRect(490, 390, 500, 400)
+ctx.fillRect(width-squareSize, height-squareSize, width, height)
 
-console.log(graph.getNodes())
+console.log("Graph: ", graph.getNodes())
 
-console.log(aStar(graph, graph.getNodes()[0][0], graph.getNodes()[nodes.length-1][nodes[0].length-1]));
 
+console.log(graph.getNodes()[0][0])
+
+let s = aStar(graph, graph.getNodes()[0][0], graph.getNodes()[nodes.length-1][nodes[0].length-1]);
+console.log(s);
+drawPath(s);
 
 
 
